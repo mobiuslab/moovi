@@ -183,7 +183,7 @@ function drawMobius(g, x, y, color, lineWidth) {
   const RADIUS_OB = RADIUS * 2;
   const SPACE = 35;
   const s = x / LOGO_WIDTH * 0.75;
-  //g.scale(s, s);
+  console.log(x, y);
   g.setTransform(s, 0, 0, s, (x - LOGO_WIDTH * s) / 2, y / 2);
 
   g.save();
