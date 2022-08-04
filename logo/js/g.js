@@ -38,6 +38,32 @@ function drawM(g, R) {
   return R * 2;
 }
 
+function drawWideM(g, R) {
+  const startAngle = toRadian(180);
+  const endAngle = toRadian(0);
+  const counterClockwise = false;
+
+  const LW_PATCH = g.lineWidth / 2;
+
+  const R1 = R * 0.75;
+  const T = R - R1;
+  const JT1_x = 0;
+  const JT1_y = 0 - T;
+  const O1_x = R1;
+  const O1_y = 0 - (R - R1);
+
+  g.beginPath();
+  g.moveTo(0, R + LW_PATCH);
+  g.lineTo(JT1_x, JT1_y);
+  g.arc(O1_x, O1_y, R1, startAngle, endAngle, counterClockwise);
+  g.lineTo(JT1_x + R1 * 2, R + LW_PATCH);
+  g.arc(O1_x + R1 * 2, O1_y, R1, startAngle, endAngle, counterClockwise);
+  g.lineTo(JT1_x + R1 * 4, R + LW_PATCH);
+  g.stroke();
+
+  return R1 * 4;
+}
+
 function drawOB(g, R) {
   let startAngle =  toRadian(45);
   let endAngle = toRadian(270 + 45);
@@ -149,12 +175,13 @@ function drawU(g, R) {
 }
 
 function drawS(g, R) {
-  let startAngle = toRadian(-30);
+  const ang = 22;
+  let startAngle = toRadian(-ang);
   let endAngle = toRadian(90);
   const counterClockwise = true;
 
   const LW_PATCH = g.lineWidth / 2;
-  const S = 0.6;
+  const S = 0.55;
   const R1 = R * (1 - S);
   const R2 = R * S;
   const O1_x = R2;
@@ -164,7 +191,7 @@ function drawS(g, R) {
   g.beginPath();
   g.arc(O1_x, O1_y, R1, startAngle, endAngle, counterClockwise);
   startAngle = toRadian(-90);
-  endAngle = toRadian(180 - 30);
+  endAngle = toRadian(180 - ang);
   g.arc(O2_x, O2_y, R2, startAngle, endAngle, !counterClockwise);
   g.stroke();
 
@@ -177,9 +204,50 @@ function drawS(g, R) {
   return R2;
 }
 
+function drawWideS(g, R) {
+  let startAngle = toRadian(0);
+  let endAngle = toRadian(-90);
+  const counterClockwise = true;
+
+  const LW_PATCH = g.lineWidth / 2;
+  const CH_WIDTH = R * 0.75 * 2;
+  const R1 = R * 0.5;
+  const R2 = R1 * 0.5;
+  const O1_x = R1;
+  const O1_y = 0 - R1;
+  const O2_x = CH_WIDTH - R2;
+  const O2_y = 0 - 2 * R1 + R2;
+  g.beginPath();
+  g.arc(O2_x, O2_y, R2, startAngle, endAngle, counterClockwise);
+  g.lineTo(R1, 0 - 2 * R1);
+  startAngle = toRadian(-90);
+  endAngle = toRadian(90);
+  g.arc(O1_x, O1_y, R1, startAngle, endAngle, counterClockwise);
+  g.lineTo(CH_WIDTH - R1, 0);
+  startAngle = toRadian(-90);
+  endAngle = toRadian(90);
+  g.arc(CH_WIDTH - O1_x,- O1_y, R1, startAngle, endAngle, !counterClockwise);
+  g.lineTo(R2, 2 * R1);
+  startAngle = toRadian(90);
+  endAngle = toRadian(180);
+  g.arc(CH_WIDTH - O2_x, 0 - O2_y, R2, startAngle, endAngle, !counterClockwise);
+  //g.arc(O1_x, O1_y, R1, startAngle, endAngle, counterClockwise);
+  //startAngle = toRadian(-90);
+  //endAngle = toRadian(180 - ang);
+  g.stroke();
+
+  //g.beginPath();
+  //startAngle = toRadian(-90);
+  //endAngle = toRadian(150);
+  //g.arc(radius, radius * 2, radius, startAngle, endAngle, !counterClockwise);
+  //g.stroke();
+
+  return CH_WIDTH;
+}
+
 function drawMobius(g, x, y, color, lineWidth) {
   const RADIUS = 60;
-  const LOGO_WIDTH = 680;
+  const LOGO_WIDTH = 755;
   const RADIUS_OB = RADIUS * 2;
   const SPACE = 35;
   const s = x / LOGO_WIDTH * 0.75;
@@ -194,7 +262,7 @@ function drawMobius(g, x, y, color, lineWidth) {
   //g.translate(x - LOGO_WIDTH / 2.0, y - RADIUS_OB / 2);
 
   let totalWidth = 0;
-  let width = drawM(g, RADIUS);
+  let width = drawWideM(g, RADIUS);
   g.translate(width + SPACE, 0);
   totalWidth += (width + SPACE);
 
@@ -210,9 +278,11 @@ function drawMobius(g, x, y, color, lineWidth) {
   g.translate(width + SPACE, 0);
   totalWidth += (width + SPACE);
 
-  width = drawS(g, RADIUS);
+  width = drawWideS(g, RADIUS);
   totalWidth += width;
   g.restore();
+
+  console.log(totalWidth);
 
   //g.scale(s, s);
   //g.translate(x - LOGO_WIDTH / 2.0, y - RADIUS_OB / 2);
